@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "AramisPlay Sync — Anime-Sama Companion",
+  "version": "1.0.0",
+  "description": "Synchronise automatiquement tes épisodes regardés sur Anime-Sama avec ton application PC AramisPlay (même hors-ligne) et ouvre directement le bon épisode.",
+  "permissions": [
+    "storage",
+    "alarms",
+    "tabs",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1/*",
+    "*://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AramisPlay Sync",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["content-early.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

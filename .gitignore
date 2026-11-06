@@ -1,0 +1,20 @@
+# Build output and intermediate artifacts
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# WebView2 & runtime cache
+data/webview2_cache/
+data/backups/
+*.tmp
+*.log
+
+# IDE & OS files
+.vs/
+.vscode/
+.idea/
+Thumbs.db
+[Dd]esktop.ini

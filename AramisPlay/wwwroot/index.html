@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AramisPlay — Catalogue & Suivi Anime-Sama</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- BARRE LATÉRALE -->
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="/logo.png" alt="AramisPlay" class="brand-fox-logo" />
+        <div class="brand-text">
+          <span class="brand-title">AramisPlay</span>
+          <span class="brand-badge">VOSTFR · EDITION PC</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-view="home">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
+          <span>Accueil</span>
+          <span class="nav-pill hidden" id="navCatchupBadge">0</span>
+        </button>
+
+        <button class="nav-item" data-view="library">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <span>Bibliothèque</span>
+          <span class="nav-count" id="navLibCount">0</span>
+        </button>
+
+        <button class="nav-item" data-view="catalog">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Catalogue</span>
+        </button>
+
+        <button class="nav-item" data-view="discovery">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          <span>Découverte</span>
+        </button>
+
+        <button class="nav-item" data-view="schedule">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendrier</span>
+        </button>
+
+        <button class="nav-item" data-view="quickpick">
+          <svg class="nav-svg" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>Ajout rapide</span>
+        </button>
+
+        <button class="nav-item" data-view="notifications">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span>Alertes sorties</span>
+          <span class="nav-pill alert hidden" id="navNotifBadge">0</span>
+        </button>
+
+        <button class="nav-item" data-view="settings">
+          <svg class="nav-svg" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+          <span>Paramètres</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="source-card" id="sourceStatusCard" title="État de la source Anime-Sama (cliquer pour vérifier / auto-détecter le domaine)">
+          <span class="status-dot" id="sourceStatusDot"></span>
+          <div class="source-info">
+            <span class="source-name" id="sourceDomainLabel">anime-sama.to</span>
+            <span class="source-sub" id="sourceStatusSub">Vérification…</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ZONE PRINCIPALE -->
+    <div class="main-area">
+      <!-- BARRE SUPÉRIEURE -->
+      <header class="topbar">
+        <div class="global-search-wrap">
+          <svg class="search-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="globalSearchInput" placeholder="Rechercher un animé dans le catalogue…" autocomplete="off" />
+          <button class="clear-search hidden" id="clearGlobalSearchBtn" title="Effacer">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="chip-btn" id="toggleCloseModeBtn" title="Choisir l'action du bouton Fermer de la fenêtre">
+            <span class="chip-indicator" id="closeModeDot"></span>
+            <span id="closeModeText">Fermeture : Veille</span>
+          </button>
+
+          <button class="action-btn secondary" id="checkNowTopBtn" title="Vérifier la disponibilité de nouveaux épisodes VOSTFR sur Anime-Sama">
+            <svg class="btn-svg" id="checkIconSvg" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <span>Actualiser sorties</span>
+          </button>
+
+          <button class="action-btn danger-ghost" id="quitFullTopBtn" title="Quitter complètement l'application (0 Mo RAM)">
+            <svg class="btn-svg" viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+            <span>Quitter</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENEUR DES VUES -->
+      <main class="views-container" id="viewsContainer">
+
+        <!-- 1. VUE ACCUEIL -->
+        <section class="view active" id="view-home">
+          <div class="onboarding-banner hidden" id="onboardingBanner">
+            <div class="onboarding-content">
+              <div class="eyebrow">DÉMARRAGE</div>
+              <h2>Construis ta bibliothèque AramisPlay</h2>
+              <p>Retrouve ta progression Anime-Sama, note tes animés favoris et reçois une alerte dès qu'un épisode VOSTFR est mis en ligne.</p>
+              <div class="onboarding-actions">
+                <button class="action-btn primary" onclick="switchView('quickpick')">Sélectionner mes classiques déjà vus</button>
+                <button class="action-btn secondary" onclick="switchView('catalog')">Parcourir le catalogue</button>
+                <button class="action-btn ghost" onclick="switchView('settings')">Connecter l'extension navigateur</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-block hidden" id="catchupSection">
+            <div class="section-header">
+              <div>
+                <div class="eyebrow gold">NOUVEAUX ÉPISODES DISPONIBLES</div>
+                <h2>À rattraper sur Anime-Sama</h2>
+              </div>
+            </div>
+            <div class="continue-grid" id="catchupGrid"></div>
+          </div>
+
+          <div class="home-block" id="continueSection">
+            <div class="section-header">
+              <div>
+                <div class="eyebrow">LECTURE EN COURS</div>
+                <h2>Reprendre le visionnage</h2>
+              </div>
+              <button class="link-btn" onclick="switchView('library')">Toute la bibliothèque</button>
+            </div>
+            <div class="continue-grid" id="continueGrid"></div>
+          </div>
+
+          <div class="home-block" id="todayScheduleSection">
+            <div class="section-header">
+              <div>
+                <div class="eyebrow">AUJOURD'HUI</div>
+                <h2>Sorties du jour</h2>
+              </div>
+              <button class="link-btn" onclick="switchView('schedule')">Voir la semaine complète</button>
+            </div>
+            <div class="poster-grid compact" id="todayGrid"></div>
+          </div>
+
+          <div class="home-block">
+            <div class="section-header">
+              <div>
+                <div class="eyebrow">POPULAIRE EN CE MOMENT</div>
+                <h2>Tendances</h2>
+              </div>
+              <button class="link-btn" onclick="switchView('catalog')">Explorer le catalogue</button>
+            </div>
+            <div class="poster-grid" id="homeTrendingGrid"></div>
+          </div>
+        </section>
+
+        <!-- 2. VUE BIBLIOTHÈQUE -->
+        <section class="view" id="view-library">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">COLLECTION LOCALE</div>
+              <h1>Ma Bibliothèque</h1>
+            </div>
+            <div class="lib-controls">
+              <input type="text" class="small-input" id="libFilterInput" placeholder="Filtrer par titre…" />
+              <select class="small-select" id="libSortSelect">
+                <option value="updated">Activité récente</option>
+                <option value="catchup">Épisodes en retard</option>
+                <option value="rating">Ma note (décroissant)</option>
+                <option value="title">Ordre alphabétique</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="tabs-bar" id="libStatusTabs">
+            <button class="tab-pill active" data-status="ALL">Tous <span class="count" id="cnt-ALL">0</span></button>
+            <button class="tab-pill" data-status="WATCHING">En cours <span class="count" id="cnt-WATCHING">0</span></button>
+            <button class="tab-pill" data-status="FAVORITES">Favoris <span class="count" id="cnt-FAVORITES">0</span></button>
+            <button class="tab-pill" data-status="PLANNING">À voir / Attendus <span class="count" id="cnt-PLANNING">0</span></button>
+            <button class="tab-pill" data-status="COMPLETED">Terminés <span class="count" id="cnt-COMPLETED">0</span></button>
+            <button class="tab-pill" data-status="PAUSED">En pause <span class="count" id="cnt-PAUSED">0</span></button>
+            <button class="tab-pill" data-status="DROPPED">Abandonnés <span class="count" id="cnt-DROPPED">0</span></button>
+          </div>
+
+          <div class="library-grid" id="libraryGrid"></div>
+        </section>
+
+        <!-- 3. VUE CATALOGUE MULTI-FILTRES -->
+        <section class="view" id="view-catalog">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">BASE MONDIALE & SORTIES</div>
+              <h1>Catalogue</h1>
+            </div>
+            <div class="lib-controls">
+              <label class="toggle-inline">
+                <input type="checkbox" id="catalogHideOwnedChk" />
+                <span>Masquer ma bibliothèque</span>
+              </label>
+              <button class="action-btn secondary" id="toggleFilterDrawerBtn">
+                <svg class="btn-svg" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                <span>Filtres avancés</span>
+                <span class="filter-count-badge hidden" id="activeFilterCountBadge">0</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="catalog-toolbar">
+            <div class="preset-pills" id="catalogPresetPills">
+              <button class="tab-pill active" data-preset="trending">Tendances</button>
+              <button class="tab-pill" data-preset="current_season" id="btnCurrentSeason">Saison actuelle</button>
+              <button class="tab-pill" data-preset="upcoming">Prochaines sorties</button>
+              <button class="tab-pill" data-preset="next_season" id="btnNextSeason">Saison suivante</button>
+              <button class="tab-pill" data-preset="popular">Populaires</button>
+              <button class="tab-pill" data-preset="top_rated">Mieux notés</button>
+            </div>
+          </div>
+
+          <!-- TIROIR DE FILTRES MULTI-SÉLECTION -->
+          <div class="filter-drawer hidden" id="catalogFilterDrawer">
+            <div class="filter-top-row">
+              <div class="filter-field">
+                <label class="field-lbl">Trier par</label>
+                <select class="small-select" id="catSortSelect">
+                  <option value="">Tri par défaut de l'onglet</option>
+                  <option value="TRENDING_DESC">Tendances actuelles</option>
+                  <option value="POPULARITY_DESC">Popularité globale</option>
+                  <option value="SCORE_DESC">Note moyenne</option>
+                  <option value="START_DATE_DESC">Date de sortie récente</option>
+                </select>
+              </div>
+
+              <div class="filter-field">
+                <label class="field-lbl">Statut de diffusion</label>
+                <select class="small-select" id="catStatusSelect">
+                  <option value="">Tous les statuts</option>
+                  <option value="RELEASING">En cours de diffusion</option>
+                  <option value="NOT_YET_RELEASED">Prochainement (Annoncé)</option>
+                  <option value="FINISHED">Terminé</option>
+                </select>
+              </div>
+
+              <div class="filter-field">
+                <label class="field-lbl">Format</label>
+                <select class="small-select" id="catFormatSelect">
+                  <option value="">Tous les formats</option>
+                  <option value="TV">Série TV</option>
+                  <option value="MOVIE">Film</option>
+                  <option value="ONA">ONA</option>
+                  <option value="OVA">OAV</option>
+                </select>
+              </div>
+
+              <div class="filter-field">
+                <label class="field-lbl">Année</label>
+                <input type="number" class="small-input" id="catYearInput" placeholder="Ex : 2026" min="1970" max="2030" style="width:110px" />
+              </div>
+            </div>
+
+            <div class="filter-group-block">
+              <div class="filter-group-title">Genres (cumulables)</div>
+              <div class="multi-chips" id="filterGenresContainer"></div>
+            </div>
+
+            <div class="filter-group-block">
+              <div class="filter-group-head">
+                <span class="filter-group-title">Thèmes & Sous-genres (Isekai, Réincarnation, Seinen, Vengeance…)</span>
+                <input type="text" class="mini-tag-search" id="tagQuickFilterInput" placeholder="Filtrer les thèmes…" />
+              </div>
+              <div class="multi-chips" id="filterTagsContainer"></div>
+            </div>
+          </div>
+
+          <!-- BARRE DES FILTRES ACTIFS -->
+          <div class="active-filters-bar hidden" id="activeFiltersBar">
+            <div class="active-chips-list" id="activeChipsList"></div>
+            <button class="link-btn" id="resetCatalogFiltersBtn">Réinitialiser tout</button>
+          </div>
+
+          <div class="poster-grid" id="catalogGrid"></div>
+
+          <div class="load-more-wrap">
+            <button class="action-btn secondary" id="catalogLoadMoreBtn">Afficher davantage de résultats</button>
+          </div>
+        </section>
+
+        <!-- 4. VUE DÉCOUVERTE (RECOMMANDATIONS CALIBRÉES SUR TES GOÛTS) -->
+        <section class="view" id="view-discovery">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow gold">MOTEUR DE RECOMMANDATION PERSONNALISÉ</div>
+              <h1>Découverte par Thème</h1>
+              <p class="section-sub">Choisis un ou plusieurs thèmes : AramisPlay croise ce thème avec les notes de ta bibliothèque pour te proposer <strong>1 valeur sûre proche de tes goûts</strong>, <strong>1 choix hybride</strong> et <strong>1 exploration hors de ta zone habituelle</strong>.</p>
+            </div>
+          </div>
+
+          <!-- Profil de goûts -->
+          <div class="taste-banner" id="tasteProfileBanner">
+            <div class="taste-left">
+              <div class="eyebrow">EMPREINTE DE TES GOÛTS</div>
+              <div class="taste-summary-line" id="tasteSummaryLine">Analyse de ta bibliothèque…</div>
+              <div class="taste-tags-row" id="tasteTagsRow"></div>
+            </div>
+            <button class="action-btn ghost" onclick="switchView('library')">Noter mes animés</button>
+          </div>
+
+          <!-- Sélecteur de thème -->
+          <div class="discovery-config-card">
+            <div class="discovery-step-label">1. Sélectionne l'ambiance ou le thème recherché (1 à 3 maximum) :</div>
+            <div class="multi-chips discovery-chips" id="discoveryThemeChips"></div>
+
+            <div class="discovery-actions-bar">
+              <button class="action-btn primary large" id="runDiscoveryBtn">
+                <svg class="btn-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                <span>Trouver 3 animés dans ce thème</span>
+              </button>
+              <button class="action-btn secondary hidden" id="rerollDiscoveryBtn">
+                Proposer 3 autres titres
+              </button>
+            </div>
+          </div>
+
+          <!-- Résultats Trio -->
+          <div class="discovery-trio-grid" id="discoveryResultsGrid"></div>
+        </section>
+
+        <!-- 5. VUE CALENDRIER -->
+        <section class="view" id="view-schedule">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">PROGRAMME HEBDOMADAIRE</div>
+              <h1>Calendrier des sorties</h1>
+            </div>
+          </div>
+
+          <div class="tabs-bar" id="scheduleDayTabs">
+            <button class="tab-pill" data-day="1">Lundi</button>
+            <button class="tab-pill" data-day="2">Mardi</button>
+            <button class="tab-pill" data-day="3">Mercredi</button>
+            <button class="tab-pill" data-day="4">Jeudi</button>
+            <button class="tab-pill" data-day="5">Vendredi</button>
+            <button class="tab-pill" data-day="6">Samedi</button>
+            <button class="tab-pill" data-day="0">Dimanche</button>
+          </div>
+
+          <div class="schedule-list" id="scheduleList"></div>
+        </section>
+
+        <!-- 6. VUE SÉLECTION RAPIDE -->
+        <section class="view" id="view-quickpick">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">RECONSTRUCTION D'HISTORIQUE</div>
+              <h1>Ajout rapide des classiques</h1>
+              <p class="section-sub">Classe et note à la volée les animés les plus populaires pour bâtir ton historique et affiner l'outil de Découverte.</p>
+            </div>
+            <div class="lib-controls">
+              <label class="toggle-inline">
+                <input type="checkbox" id="quickHideAddedToggle" checked />
+                <span>Masquer ceux déjà classés</span>
+              </label>
+              <button class="action-btn secondary" id="quickNextBatchBtn">Série suivante</button>
+            </div>
+          </div>
+
+          <div class="quick-grid" id="quickPickGrid"></div>
+        </section>
+
+        <!-- 7. VUE NOTIFICATIONS -->
+        <section class="view" id="view-notifications">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">SUIVI DES SORTIES VOSTFR</div>
+              <h1>Alertes d'épisodes</h1>
+            </div>
+            <div class="lib-controls">
+              <button class="action-btn primary" id="notifCheckNowBtn">Vérifier maintenant</button>
+              <button class="action-btn secondary" id="notifReadAllBtn">Tout marquer comme lu</button>
+              <button class="action-btn ghost" id="notifClearBtn">Effacer l'historique</button>
+            </div>
+          </div>
+
+          <div class="notif-list" id="notificationsList"></div>
+        </section>
+
+        <!-- 8. VUE PARAMÈTRES -->
+        <section class="view" id="view-settings">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">CONFIGURATION SYSTÈME</div>
+              <h1>Paramètres & Synchronisation</h1>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3>Ressources & Fermeture de la fenêtre</h3>
+              <p class="card-desc">Définis le comportement du bouton de fermeture de la fenêtre principale :</p>
+
+              <div class="radio-cards">
+                <label class="radio-card">
+                  <input type="radio" name="closeBehavior" value="tray" />
+                  <div>
+                    <strong>Veille légère en arrière-plan (~15 Mo RAM · 0% GPU)</strong>
+                    <p>Ferme et décharge totalement l'interface graphique, tout en conservant l'icône système près de l'horloge Windows pour les notifications VOSTFR en direct et l'extension navigateur.</p>
+                  </div>
+                </label>
+
+                <label class="radio-card">
+                  <input type="radio" name="closeBehavior" value="quit" />
+                  <div>
+                    <strong>Fermeture complète (0 Mo RAM)</strong>
+                    <p>Arrête tous les processus. L'extension navigateur conserve en mémoire locale les épisodes vus et les synchronise automatiquement à la réouverture d'AramisPlay.</p>
+                  </div>
+                </label>
+              </div>
+
+              <div class="setting-row">
+                <label>Notifications système Windows</label>
+                <input type="checkbox" id="setWinNotifs" class="switch-chk" />
+              </div>
+
+              <div class="setting-row">
+                <label>Incrémenter l'épisode lors du lancement depuis l'application</label>
+                <input type="checkbox" id="setAutoInc" class="switch-chk" />
+              </div>
+
+              <div class="setting-row">
+                <label>Fréquence de vérification des sorties (en veille)</label>
+                <select id="setCheckInterval" class="small-select">
+                  <option value="10">Toutes les 10 minutes</option>
+                  <option value="20">Toutes les 20 minutes</option>
+                  <option value="30">Toutes les 30 minutes</option>
+                  <option value="60">Toutes les heures</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3>Domaine Anime-Sama & Sauvegardes</h3>
+              <p class="card-desc">Ta bibliothèque utilise des identifiants indépendants de l'URL d'Anime-Sama pour survivre aux changements d'extension.</p>
+
+              <div class="setting-col">
+                <label>Domaine actif</label>
+                <div class="inline-field">
+                  <input type="text" id="setAnimeSamaUrl" class="small-input grow" placeholder="https://anime-sama.to" />
+                  <button class="action-btn secondary" id="saveDomainBtn">Enregistrer</button>
+                </div>
+              </div>
+
+              <div class="inline-actions">
+                <button class="action-btn primary" id="autoDetectDomainBtn">Auto-détecter le domaine Anime-Sama</button>
+                <span class="muted-note" id="domainDetectFeedback"></span>
+              </div>
+
+              <hr class="sep" />
+
+              <h3>Export & Restauration JSON</h3>
+              <p class="card-desc">Sauvegarde manuelle ou transfert (une sauvegarde automatique quotidienne est également conservée dans <code>A:\AramisPlay\data\backups</code>).</p>
+              <div class="inline-actions">
+                <button class="action-btn secondary" id="exportJsonBtn">Exporter ma bibliothèque (.json)</button>
+                <label class="action-btn ghost file-btn">
+                  Importer une sauvegarde (.json)
+                  <input type="file" id="importJsonInput" accept=".json" hidden />
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-card full-span">
+              <h3>Extension Navigateur « AramisPlay Sync »</h3>
+              <p class="card-desc">Synchronise automatiquement chaque épisode regardé sur Anime-Sama, ouvre directement le bon épisode dans le lecteur et permet d'importer ton historique navigateur existant.</p>
+              <ol class="steps-list">
+                <li>Ouvre <code>chrome://extensions</code> (ou <code>brave://extensions</code> / <code>edge://extensions</code>) dans ton navigateur.</li>
+                <li>Active le <strong>Mode développeur</strong> en haut à droite.</li>
+                <li>Clique sur <strong>Charger l'extension non empaquetée</strong> et sélectionne le dossier <code>A:\AramisPlay\extension</code>.</li>
+                <li>Sur un onglet Anime-Sama, ouvre l'icône de l'extension pour importer ton historique actuel en un clic.</li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MODALE FICHE DÉTAILLÉE -->
+  <div class="modal-backdrop hidden" id="detailModalBackdrop">
+    <div class="detail-modal" id="detailModal">
+      <button class="modal-close-btn" id="closeDetailModalBtn" title="Fermer">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div id="detailModalContent"></div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
